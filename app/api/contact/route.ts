@@ -10,14 +10,16 @@ export async function POST(req: Request) {
 
     // Configure transporter
     const transporter = nodemailer.createTransport({
-      service: "Gmail", // or SMTP
+      host: "smtp.zoho.com",
+      port: 465,
+      secure: true, // SSL
       auth: {
         user: process.env.EMAIL_USER,
         pass: process.env.EMAIL_PASS,
       },
     });
 
-    const res=await transporter.sendMail({
+    const res = await transporter.sendMail({
       from: process.env.EMAIL_USER,
       to: process.env.EMAIL_TO, // your destination email
       subject: `Contact Request from: ${name}`,
