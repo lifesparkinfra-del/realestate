@@ -10,7 +10,7 @@ export async function POST(req: Request) {
 
     // Configure transporter
     const transporter = nodemailer.createTransport({
-      host: "smtp.zoho.com",
+      host: "smtp.zoho.in",
       port: 465,
       secure: true, // SSL
       auth: {
@@ -20,15 +20,27 @@ export async function POST(req: Request) {
     });
 
     const res = await transporter.sendMail({
-      from: process.env.EMAIL_USER,
+      from: `"Website Contact" <${process.env.EMAIL_USER}>`,
       to: process.env.EMAIL_TO, // your destination email
-      subject: `Contact Request from: ${name}`,
+      subject: `New Contact Request - ${name}`,
       text: `
-Name: ${name}
-Email: ${email}
-Phone: ${phone}
-Message: ${message}
-      `,
+✨ New Contact Request Received ✨
+
+You’ve received a new message through your website contact form.
+
+────────────────────────────────
+👤 Name   : ${name}
+📧 Email  : ${email}
+📞 Phone  : ${phone || "Not provided"}
+────────────────────────────────
+
+💬 Message
+${message}
+
+────────────────────────────────
+This email was automatically generated from your website.
+`,
+
     });
 
 
