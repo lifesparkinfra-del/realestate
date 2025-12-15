@@ -280,7 +280,7 @@ export default function AboutPage() {
       </AnimatedSection>
 
       {/* Team */}
-      <AnimatedSection className="py-12 md:py-20 bg-background">
+      {/* <AnimatedSection className="py-12 md:py-20 bg-background">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center space-y-4 mb-16">
             <Badge variant="secondary" className="w-fit mx-auto">
@@ -347,7 +347,7 @@ export default function AboutPage() {
             ))}
           </motion.div>
         </div>
-      </AnimatedSection>
+      </AnimatedSection> */}
 
       {/* Stats */}
       {/* <AnimatedSection className="py-16 bg-primary text-primary-foreground">
