@@ -55,7 +55,7 @@ const ProjectSchema = new mongoose.Schema(
     },
     price: {
       type: String,
-      required: true,
+      required: false,
     },
     progress: {
       type: Number,

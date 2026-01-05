@@ -100,7 +100,6 @@ const projects = [
     floors: 25,
     bhk: 3,
     amenities: ["Lift", "Lobby", "24/7 Security"],
-    price: "Starting from $450,000",
     progress: 65,
     images: [
       "/about_placeholder.png",
@@ -598,9 +597,9 @@ export default function HomePage() {
                     </div>
 
                     <div className="flex items-center justify-between text-sm">
-                      <span className="font-semibold text-lg">
+                      {/* <span className="font-semibold text-lg">
                         {selectedProject.price}
-                      </span>
+                      </span> */}
                       <span className="text-muted-foreground flex items-center gap-1">
                         <Calendar className="h-4 w-4" />
                         {selectedProject.completion}
