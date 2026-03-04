@@ -7,19 +7,26 @@ import Autoplay from "embla-carousel-autoplay";
 import Link from "next/link";
 import Image from "next/image";
 
-const slides = [
-  {
-    src: "/07.jpg", alt: "Modern residential development render",
-  },
-  { src: "/23.jpg", alt: "Premium shopping mall exterior" },
-  { src: "/36.jpg", alt: "Coastal mixed-use towers" },
-];
+interface HeroCarouselProps {
+  title?: string;
+  subtitle?: string;
+  images?: string[];
+}
 
-export function HeroCarousel() {
+export function HeroCarousel({ title, subtitle, images }: HeroCarouselProps) {
   const prefersReducedMotion = useReducedMotion();
   const autoplay = React.useRef(
     Autoplay({ delay: 4500, stopOnInteraction: false })
   );
+
+  const displaySlides = images && images.length > 0
+    ? images.map(src => ({ src, alt: "Hero image" }))
+    : [
+      { src: "/07.jpg", alt: "Modern residential development render" },
+      { src: "/23.jpg", alt: "Premium shopping mall exterior" },
+      { src: "/36.jpg", alt: "Coastal mixed-use towers" },
+    ];
+
   const [emblaRef] = useEmblaCarousel(
     { loop: true, duration: prefersReducedMotion ? 10 : 20 },
     prefersReducedMotion ? [] : [autoplay.current]
@@ -33,7 +40,7 @@ export function HeroCarousel() {
         aria-label="Featured project visuals"
       >
         <div className="flex h-full">
-          {slides.map((s, i) => (
+          {displaySlides.map((s, i) => (
             <div key={i} className="relative min-w-0 flex-[0_0_100%]">
               <Image
                 src={s.src || "/placeholder.svg"}
@@ -42,7 +49,9 @@ export function HeroCarousel() {
                 height={1000}
                 className="absolute inset-0 h-full w-full object-cover"
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/65 to-black/20" />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/50 to-transparent" />
+              {/* Brand-blue left accent glow */}
+              <div className="absolute inset-0 bg-gradient-to-r from-primary/20 via-transparent to-transparent" />
             </div>
           ))}
         </div>
@@ -50,7 +59,7 @@ export function HeroCarousel() {
 
       {/* Content overlay */}
       <div className="pointer-events-none absolute inset-0">
-        <div className="mx-auto flex h-full max-w-7xl items-center justify-center px-4 sm:px-6 lg:px-8 text-center">
+        <div className="mx-auto flex h-full max-w-7xl items-end pb-16 px-4 sm:px-6 lg:px-8 text-left">
           <div className="pointer-events-auto max-w-2xl">
             <motion.h1
               initial={prefersReducedMotion ? undefined : { opacity: 0, y: 18 }}
@@ -59,9 +68,9 @@ export function HeroCarousel() {
               }
               transition={{ duration: 0.6, ease: "easeOut" }}
               viewport={{ once: true }}
-              className="text-pretty text-3xl font-semibold md:text-5xl"
+              className="text-pretty text-3xl font-serif font-semibold md:text-5xl lg:text-6xl tracking-tight drop-shadow-md"
             >
-              Shaping skylines with precision, quality, and trust.
+              {title || "Shaping skylines with\nprecision, quality, and trust."}
             </motion.h1>
 
             <motion.p
@@ -71,10 +80,9 @@ export function HeroCarousel() {
               }
               transition={{ duration: 0.5, ease: "easeOut", delay: 0.1 }}
               viewport={{ once: true }}
-              className="mt-3 max-w-xl mx-auto text-base leading-relaxed text-slate-200 md:text-lg"
+              className="mt-4 max-w-lg text-sm leading-relaxed text-slate-300 md:text-base"
             >
-              Premium residential and mixed-use developments delivered on time
-              with rigorous quality standards.
+              {subtitle || "Premium residential and mixed-use developments delivered on time with rigorous quality standards."}
             </motion.p>
 
             <motion.div
@@ -84,17 +92,17 @@ export function HeroCarousel() {
               }
               transition={{ duration: 0.45, ease: "easeOut", delay: 0.15 }}
               viewport={{ once: true }}
-              className="mt-6 flex justify-center flex-wrap gap-3"
+              className="mt-8 flex flex-wrap gap-3"
             >
               <Link
                 href="/projects"
-                className="inline-flex items-center justify-center rounded-md bg-primary px-5 py-2.5 text-sm font-medium text-primary-foreground shadow-sm transition-colors hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
+                className="inline-flex items-center justify-center rounded-none border border-primary bg-primary px-7 py-3 text-sm font-semibold uppercase tracking-widest text-primary-foreground shadow-lg transition-all hover:bg-primary/90 hover:shadow-primary/30"
               >
                 View Projects
               </Link>
               <Link
                 href="/contact-us"
-                className="inline-flex items-center justify-center rounded-md border border-white/25 bg-white/10 px-5 py-2.5 text-sm font-medium text-white transition-colors hover:bg-white/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/40"
+                className="inline-flex items-center justify-center rounded-none border border-white/40 bg-transparent px-7 py-3 text-sm font-semibold uppercase tracking-widest text-white transition-all hover:bg-white/10"
               >
                 Contact Us
               </Link>
@@ -102,6 +110,8 @@ export function HeroCarousel() {
           </div>
         </div>
       </div>
+      {/* Thin accent line at bottom */}
+      <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-gradient-to-r from-transparent via-primary to-transparent opacity-70" />
     </section>
   );
 }

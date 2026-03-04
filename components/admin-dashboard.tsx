@@ -41,9 +41,11 @@ import {
   BarChart3,
   AlertCircle,
   CheckCircle,
+  Settings,
 } from "lucide-react";
 import Link from "next/link";
 import axios from "axios";
+import { ContentManagementTab } from "@/components/content-management-tab";
 
 import { supabase } from "../lib/supabaseClient";
 import { set } from "mongoose";
@@ -94,7 +96,21 @@ export function AdminDashboard() {
   } | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
+  const [siteSettings, setSiteSettings] = useState<any>(null);
+  const [isSavingSettings, setIsSavingSettings] = useState(false);
+
   useEffect(() => {
+
+    const fetchSettings = async () => {
+      try {
+        const response = await axios.get("/api/admin/content");
+        if (response.data.success) {
+          setSiteSettings(response.data.data);
+        }
+      } catch (error) {
+        console.error("Error fetching site settings:", error);
+      }
+    };
 
     const fetchProjects = async () => {
       try {
@@ -119,6 +135,7 @@ export function AdminDashboard() {
     };
     fetchEnquiries();
     fetchProjects();
+    fetchSettings();
 
     setIsLoading(false);
 
@@ -223,6 +240,14 @@ export function AdminDashboard() {
               >
                 <Mail className="h-4 w-4 mr-2" />
                 Enquiries
+              </Button>
+              <Button
+                variant={activeTab === "content" ? "default" : "ghost"}
+                size="sm"
+                onClick={() => setActiveTab("content")}
+              >
+                <Settings className="h-4 w-4 mr-2" />
+                Content
               </Button>
             </nav>
           </div>
@@ -526,6 +551,15 @@ export function AdminDashboard() {
               ))}
             </div>
           </div>
+        )}
+
+        {/* Content Management Tab */}
+        {activeTab === "content" && (
+          <ContentManagementTab
+            initialSettings={siteSettings}
+            showAlert={showAlert}
+            onSaved={(newSettings: any) => setSiteSettings(newSettings)}
+          />
         )}
       </div>
 

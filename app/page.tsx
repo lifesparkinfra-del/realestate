@@ -37,7 +37,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Calendar, Car, Home } from "lucide-react";
+import { Calendar, Car, Home, Scroll } from "lucide-react";
 import { ImageLightbox } from "@/components/image-lightbox";
 import { motion } from "framer-motion";
 
@@ -93,7 +93,7 @@ const projects = [
     status: "Ongoing",
     image: "/project1.jpg",
     shortdesc:
-      "Premium 3BHK residences with spacious layouts, elegant finishes, and exclusive amenities, designed to offer modern luxury and a vibrant community lifestyle.",
+      "Premium 3BHK residences with spacious layouts, elegant finishes, andxclusive amenities, designed to offer modern luxury and a vibrant community lifestyle.",
     description:
       "Experience premium 3BHK residences thoughtfully designed to blend modern architecture with refined luxury. Each limited apartment offers spacious interiors, high-quality finishes, and access to exclusive amenities that redefine comfort and elegance. Nestled in a prime location, these homes provide the perfect balance of convenience, style, and a vibrant community atmosphere.",
     completion: "Q2 2025",
@@ -142,6 +142,7 @@ export default function HomePage() {
   const [selectedProject, setSelectedProject] = useState<
     (typeof projects)[0] | null
   >(null);
+  const [siteContent, setSiteContent] = useState<any>(null);
   const [enquiryForm, setEnquiryForm] = useState({
     name: "",
     email: "",
@@ -160,7 +161,20 @@ export default function HomePage() {
         console.error("Error fetching featured projects:", error);
       }
     };
+
+    const fetchSiteContent = async () => {
+      try {
+        const response = await axios.get("/api/content");
+        if (response.data.success) {
+          setSiteContent(response.data.data);
+        }
+      } catch (error) {
+        console.error("Error fetching site content:", error);
+      }
+    };
+
     fetchFeaturedProjects();
+    fetchSiteContent();
   }, []);
 
   const handleEnquirySubmit = (e: React.FormEvent) => {
@@ -181,62 +195,63 @@ export default function HomePage() {
 
   return (
     <div className="min-h-screen bg-background">
-      <HeroCarousel />
+      <HeroCarousel
+        title={siteContent?.homeHero?.title}
+        subtitle={siteContent?.homeHero?.subtitle}
+        images={siteContent?.homeHero?.images}
+      />
 
-      {/* Stats Section */}
-      <AnimatedSection className="py-12 bg-primary text-primary-foreground">
-  <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-    <motion.div
-      className="grid grid-cols-2 lg:grid-cols-4 gap-8"
-      initial="hidden"
-      whileInView="visible"
-      viewport={{ once: true, amount: 0.2 }}
-      transition={{ staggerChildren: 0.15 }}
-    >
-      {services.map((service, index) => (
-        <motion.div
-          key={index}
-          variants={itemVariants}
-          transition={{ duration: 0.5, ease: "easeOut" }}
-          className="text-center space-y-2 group relative"
-        >
-          <service.icon className="h-8 w-8 mx-auto mb-4 opacity-90 group-hover:scale-110 transition-transform duration-300" />
-          <div className="text-xl font-bold whitespace-pre-line">
-            {service.title.replace(" ", "\n")}
-          </div>
-        </motion.div>
-      ))}
-    </motion.div>
-  </div>
-</AnimatedSection>
+      {/* Stats Section - Services Bar */}
+      <AnimatedSection className="py-10 bg-gradient-to-r from-primary via-primary to-primary/90 text-primary-foreground relative overflow-hidden">
+        {/* Subtle diagonal stripes */}
+        <div className="absolute inset-0 opacity-5" style={{ backgroundImage: 'repeating-linear-gradient(45deg, white 0, white 1px, transparent 0, transparent 50%)', backgroundSize: '12px 12px' }} />
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <motion.div
+            className="grid grid-cols-2 lg:grid-cols-4 gap-8"
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, amount: 0.2 }}
+            transition={{ staggerChildren: 0.15 }}
+          >
+            {services.map((service, index) => (
+              <motion.div
+                key={index}
+                variants={itemVariants}
+                transition={{ duration: 0.5, ease: "easeOut" }}
+                className="text-center space-y-2 group relative"
+              >
+                <service.icon className="h-8 w-8 mx-auto mb-3 opacity-90 group-hover:scale-110 transition-transform duration-300" />
+                <div className="text-sm font-semibold uppercase tracking-widest whitespace-pre-line">
+                  {service.title.replace(" ", "\n")}
+                </div>
+              </motion.div>
+            ))}
+          </motion.div>
+        </div>
+      </AnimatedSection>
 
-      {/* About us */}
-      <AnimatedSection className="py-14 bg-muted/30">
+      {/* Our Journey Section */}
+      <AnimatedSection className="py-20 bg-white dark:bg-background relative">
+        {/* Left accent border */}
+        <div className="absolute left-0 top-0 bottom-0 w-1.5 bg-gradient-to-b from-primary/60 via-primary to-primary/20" />
         <div className="md:flex justify-between items-center gap-20 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex flex-col gap-6">
-            <h2 className="text-3xl lg:text-5xl font-bold">
-              Our Journey of Transformation
+            <h2 className="text-3xl lg:text-5xl font-serif font-semibold whitespace-pre-line tracking-tight">
+              {siteContent?.homeJourney?.title || "Our Journey of Transformation"}
             </h2>
-            <p className="text-xl text-muted-foreground mx-auto">
-              Our journey began in 2022, when we incorporated the company in
-              Odisha with a vision to redefine infrastructure consulting. By
-              2023, we had taken on our first major consulting assignments
-              across residential and commercial projects, marking an important
-              milestone in our growth. In 2024, we expanded our services to
-              offer complete project management and execution support,
-              strengthening our role as a trusted partner in the real estate
-              sector. The year 2025 saw us diversifying into civil
-              infrastructure projects and extending our regional presence,
-              further solidifying our commitment to building lasting value for
-              our clients and communities.
+            <p className="text-lg text-muted-foreground max-w-2xl text-justify">
+              {siteContent?.homeJourney?.description ||
+                `Our journey began in 2022, when we incorporated the company in Odisha with a vision to redefine infrastructure consulting. By 2023, we had taken on our first major consulting assignments across residential and commercial projects, marking an important milestone in our growth. In 2024, we expanded our services to offer complete project management and execution support, strengthening our role as a trusted partner in the real estate sector. The year 2025 saw us diversifying into civil infrastructure projects and extending our regional presence, further solidifying our commitment to building lasting value for our clients and communities.`}
             </p>
             <Button size="lg" variant="default" className="text-lg px-8 w-fit">
               <Mail className="h-5 w-5 mr-2" />
               Get In Touch
             </Button>
           </div>
-          <div className="md:w-[250vw] h-full my-10 w-[8 rem]">
-            <Lottie animationData={animationData} loop={true} />
+          <div className="md:w-1/2 w-full h-auto my-10 flex justify-center items-center">
+            <div className="w-full max-w-[400px]">
+              <Lottie animationData={animationData} loop={true} />
+            </div>
           </div>
         </div>
       </AnimatedSection>
@@ -248,12 +263,12 @@ export default function HomePage() {
             <Badge variant="secondary" className="w-fit mx-auto">
               Our Portfolio
             </Badge>
-            <h2 className="text-3xl lg:text-5xl font-bold">
-              Featured Projects
+            <h2 className="text-3xl lg:text-5xl font-serif font-semibold whitespace-pre-line tracking-tight">
+              {siteContent?.homeProjects?.title || "Featured Projects"}
             </h2>
-            <p className="text-xl text-muted max-w-3xl mx-auto">
-              Discover our latest developments that showcase innovation,
-              quality, and attention to detail in every project we undertake.
+            <p className="text-lg text-muted max-w-3xl mx-auto whitespace-pre-line">
+              {siteContent?.homeProjects?.subtitle || `Discover our latest developments that showcase innovation,
+              quality, and attention to detail in every project we undertake.`}
             </p>
           </div>
 
@@ -261,13 +276,13 @@ export default function HomePage() {
             {FeaturedProjects.map((project) => (
               <Card
                 key={project._id}
-                className="overflow-hidden hover:shadow-lg transition-shadow"
+                className="overflow-hidden hover:shadow-xl transition-shadow group cursor-pointer"
               >
-                <div className="relative">
+                <div className="relative overflow-hidden">
                   <img
                     src={project.image || "/placeholder.svg"}
                     alt={project.title}
-                    className="w-full h-64 object-cover"
+                    className="w-full h-64 object-cover transition-transform duration-500 group-hover:scale-105"
                   />
                   <Badge
                     variant={
@@ -280,7 +295,7 @@ export default function HomePage() {
                 </div>
                 <CardHeader>
                   <div className="flex justify-between items-start">
-                    <CardTitle className="text-xl">{project.title}</CardTitle>
+                    <CardTitle className="text-xl font-serif font-medium">{project.title}</CardTitle>
                     <Badge variant="outline">{project.type}</Badge>
                   </div>
                   <CardDescription className="flex items-center gap-1">
@@ -321,14 +336,14 @@ export default function HomePage() {
         </div>
       </AnimatedSection>
 
-      {/* Values */}
+      {/* Values Section */}
       <AnimatedSection className="py-20 bg-muted/30">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center space-y-4 mb-16">
-            <h2 className="text-3xl lg:text-4xl font-bold text-foreground">
+            <h2 className="text-3xl lg:text-5xl font-serif font-semibold text-foreground tracking-tight">
               What Drives Us
             </h2>
-            <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
+            <p className="text-lg text-muted-foreground max-w-3xl mx-auto">
               Our core values guide every decision we make and every project we
               undertake.
             </p>
@@ -347,13 +362,15 @@ export default function HomePage() {
                 variants={cardVariants}
                 transition={{ duration: 0.5, ease: "easeOut" }}
               >
-                <Card className="text-center p-6 hover:shadow-lg transition-shadow">
+                <Card className="text-center p-8 hover:shadow-2xl transition-all duration-300 group cursor-pointer border border-border/50 hover:border-primary/40 bg-background dark:bg-card">
                   <CardHeader>
-                    <value.icon className="h-12 w-12 text-primary mx-auto mb-4" />
-                    <CardTitle className="text-xl">{value.title}</CardTitle>
+                    <div className="h-14 w-14 mx-auto mb-4 rounded-none bg-primary/10 flex items-center justify-center group-hover:bg-primary transition-colors duration-300">
+                      <value.icon className="h-7 w-7 text-primary group-hover:text-primary-foreground transition-colors duration-300" />
+                    </div>
+                    <CardTitle className="text-xl font-serif font-medium group-hover:text-primary transition-colors">{value.title}</CardTitle>
                   </CardHeader>
                   <CardContent>
-                    <p className="text-muted-foreground">{value.description}</p>
+                    <p className="text-muted-foreground !text-justify">{value.description}</p>
                   </CardContent>
                 </Card>
               </motion.div>
@@ -398,38 +415,42 @@ export default function HomePage() {
       </AnimatedSection> */}
 
       {/* CTA Section */}
-      <section className="py-20 bg-primary text-primary-foreground">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center space-y-8">
-          <h2 className="text-3xl lg:text-5xl font-bold">
-            Ready to Start Your Next Project?
+      <section className="py-20 bg-primary text-primary-foreground relative overflow-hidden">
+        {/* Decorative background element */}
+        <div className="absolute top-0 right-0 -translate-y-12 translate-x-1/3 w-96 h-96 bg-primary-foreground/10 rounded-full blur-3xl pointer-events-none" />
+        <div className="absolute bottom-0 left-0 translate-y-1/3 -translate-x-1/3 w-72 h-72 bg-primary-foreground/10 rounded-full blur-3xl pointer-events-none" />
+
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center space-y-8 relative z-10">
+          <h2 className="text-3xl lg:text-5xl font-serif font-semibold whitespace-pre-line tracking-tight">
+            {siteContent?.homeCta?.title || "Ready to Start Your Next Project?"}
           </h2>
-          <p className="text-xl text-primary-foreground/90">
-            Let's discuss how we can bring your vision to life with our
-            expertise and commitment to excellence.
+          <p className="text-lg text-primary-foreground/90 whitespace-pre-line">
+            {siteContent?.homeCta?.description || `Let's discuss how we can bring your vision to life with our
+            expertise and commitment to excellence.`}
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-<Button
-      asChild
-      size="lg"
-      variant="secondary"
-      className="text-lg px-8"
-    >
-      <a href="mailto:lifesparkinfra@gmail.com?subject=Enquring&body=My%20Enquiry%20is%20about">
-        <Mail className="h-5 w-5 mr-2" />
-        Get In Touch
-      </a>
-    </Button>
             <Button
-      asChild
-      size="lg"
-      variant="outline"
-      className="text-lg px-8 border-primary-foreground text-primary-foreground hover:bg-primary-foreground hover:text-primary bg-transparent"
-    >
-      <a href="tel:+919692727075">
-        <Phone className="h-5 w-5 mr-2" />
-        Call Us Now
-      </a>
-    </Button>
+              asChild
+              size="lg"
+              variant="secondary"
+              className="text-sm px-8 uppercase tracking-widest font-semibold rounded-none"
+            >
+              <a href="mailto:lifesparkinfra@gmail.com?subject=Enquring&body=My%20Enquiry%20is%20about">
+                <Mail className="h-5 w-5 mr-2" />
+                Get In Touch
+              </a>
+            </Button>
+            <Button
+              asChild
+              size="lg"
+              variant="outline"
+              className="text-sm px-8 uppercase tracking-widest font-semibold rounded-none border-primary-foreground text-primary-foreground hover:bg-primary-foreground hover:text-primary bg-transparent"
+            >
+              <a href="tel:+919692727075">
+                <Phone className="h-5 w-5 mr-2" />
+                Call Us Now
+              </a>
+            </Button>
           </div>
         </div>
       </section>
@@ -438,194 +459,253 @@ export default function HomePage() {
         open={!!selectedProject}
         onOpenChange={() => setSelectedProject(null)}
       >
-        <DialogContent className="min-w-[80vw] min-h-[60vh] lg:min-w-[60vw]">
-          <ScrollArea className="h-[70vh] pr-4 md:h-full">
-            <DialogHeader>
-              <DialogTitle>Enquire About {selectedProject?.title}</DialogTitle>
-              <DialogDescription>
-                Share your details and we’ll get back to you with availability
-                and pricing.
-              </DialogDescription>
-            </DialogHeader>
+        <DialogContent className="w-[98vw] max-w-7xl h-[92vh] p-0 sm:p-0 sm:max-w-none sm:gap-0 overflow-hidden rounded-2xl border-none">
+          <DialogTitle className="sr-only">{selectedProject?.title}</DialogTitle>
 
-            {selectedProject && (
-              <div className="grid gap-6 md:flex lg:gap-12 my-10 md:my-6">
-                {/* Left: Enquiry Form */}
-                <form
-                  onSubmit={handleEnquirySubmit}
-                  className="space-y-4 mt-6 order-2 md:order-1 border p-6 rounded-md shadow-xl "
-                >
-                  <div className="grid grid-cols-2 gap-4">
-                    <div className="space-y-2">
-                      <label className="text-sm font-medium">Full Name</label>
-                      <Input
-                        required
-                        value={enquiryForm.name}
-                        onChange={(e) =>
-                          setEnquiryForm({
-                            ...enquiryForm,
-                            name: e.target.value,
-                          })
-                        }
-                        placeholder="Your full name"
-                      />
-                    </div>
-                    <div className="space-y-2">
-                      <label className="text-sm font-medium">
-                        Phone Number
-                      </label>
-                      <Input
-                        required
-                        type="tel"
-                        value={enquiryForm.phone}
-                        onChange={(e) =>
-                          setEnquiryForm({
-                            ...enquiryForm,
-                            phone: e.target.value,
-                          })
-                        }
-                        placeholder="Your phone number"
-                      />
-                    </div>
-                  </div>
-                  <div className="space-y-2">
-                    <label className="text-sm font-medium">Email Address</label>
-                    <Input
-                      required
-                      type="email"
-                      value={enquiryForm.email}
-                      onChange={(e) =>
-                        setEnquiryForm({
-                          ...enquiryForm,
-                          email: e.target.value,
-                        })
-                      }
-                      placeholder="your.email@example.com"
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <label className="text-sm font-medium">Message</label>
-                    <Textarea
-                      value={enquiryForm.message}
-                      required
-                      onChange={(e) =>
-                        setEnquiryForm({
-                          ...enquiryForm,
-                          message: e.target.value,
-                        })
-                      }
-                      placeholder="Tell us about your requirements, preferred unit size, budget, or any specific questions..."
-                      rows={6}
-                    />
-                  </div>
-                  <div className="flex gap-4 pt-2">
-                    <Button type="submit" className="flex-1">
-                      <Mail className="h-4 w-4 mr-2" />
-                      Send Enquiry
-                    </Button>
-                    <Button
-                      type="button"
-                      variant="outline"
-                      onClick={() => setSelectedProject(null)}
+          {selectedProject && (
+            <div className="flex flex-col md:flex-row h-full bg-background">
+
+              {/* COLUMN 1: Visual Hero (33%) */}
+              <div className="relative hidden md:block w-[33%] flex-shrink-0 overflow-hidden border-r border-border/10">
+                <Image
+                  src={selectedProject.image || "/placeholder.svg"}
+                  alt={selectedProject.title}
+                  fill
+                  className="object-cover"
+                  priority
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/40 to-transparent" />
+
+                {/* Project info overlay */}
+                <div className="absolute bottom-0 left-0 right-0 p-8 text-white">
+                  <div className="flex items-center gap-2 mb-3">
+                    <Badge
+                      variant={selectedProject.status === "Completed" ? "default" : "secondary"}
+                      className="px-2 py-0.5 text-[9px] uppercase tracking-[0.1em] font-bold"
                     >
-                      Cancel
-                    </Button>
+                      {selectedProject.status}
+                    </Badge>
+                    <Badge variant="outline" className="px-2 py-0.5 text-[9px] uppercase tracking-[0.1em] border-white/20 text-white bg-white/5 backdrop-blur-sm">
+                      {selectedProject.type}
+                    </Badge>
                   </div>
-                </form>
+                  <h2 className="text-3xl font-serif font-bold tracking-tight leading-tight mb-2">
+                    {selectedProject.title}
+                  </h2>
+                  <p className="text-sm text-white/70 flex items-start gap-1.5 font-light">
+                    <MapPin className="h-3.5 w-3.5 flex-shrink-0 mt-0.5 text-primary" />
+                    <span>{selectedProject.location}</span>
+                  </p>
 
-                {/* Right: Property Details + Gallery */}
-                <div className="order-1 md:order-2">
-                  <div className="space-y-4">
-                    <div className="space-y-1">
-                      <h3 className="text-xl font-semibold">
-                        {selectedProject.title}
-                      </h3>
-                      <p className="text-sm text-muted-foreground flex items-center gap-1">
-                        <MapPin className="h-4 w-4" />{" "}
-                        {selectedProject.location}
+                </div>
+              </div>
+
+              {/* COLUMN 2: Narrative Center (34%) */}
+              <div className="flex-1 overflow-y-auto custom-scrollbar border-r border-border/50">
+
+                {/* Mobile Title View */}
+                <div className="md:hidden relative h-48 w-full">
+                  <Image
+                    src={selectedProject.image || "/placeholder.svg"}
+                    alt={selectedProject.title}
+                    fill
+                    className="object-cover"
+                  />
+                  <div className="absolute inset-0 bg-black/60" />
+                  <div className="absolute bottom-4 left-4 text-white">
+                    <h2 className="text-xl font-serif font-bold">{selectedProject.title}</h2>
+                    <p className="text-xs opacity-80">{selectedProject.location}</p>
+                  </div>
+                </div>
+
+                <div className="p-8 space-y-10">
+                  {/* Vision Lead-in */}
+                  {selectedProject.shortdesc && (
+                    <section className="space-y-3">
+                      <h4 className="text-[10px] uppercase tracking-[0.2em] text-primary font-bold">The Vision</h4>
+                      <p className="text-xl font-serif font-medium text-foreground italic leading-snug">
+                        "{selectedProject.shortdesc}"
                       </p>
-                    </div>
+                    </section>
+                  )}
 
-                    {/* Image gallery */}
-                    <div className="grid grid-cols-3 gap-2">
-                      {selectedProject.images?.slice(0, 3).map((src, idx) => {
-                        const total = selectedProject.images?.length ?? 0;
-                        const showOverlay = idx === 2 && total > 3;
-                        const remaining = Math.max(0, total - 3);
-                        return (
-                          <button
-                            key={idx}
-                            type="button"
-                            onClick={() => {
-                              setLightboxIndex(idx);
-                              setLightboxOpen(true);
-                            }}
-                            className="relative group h-28 lg:h-[16rem] w-full overflow-hidden rounded"
-                            aria-label={`Open image ${idx + 1} of ${total}`}
-                          >
-                            <Image
-                              src={src || "/placeholder.svg"}
-                              alt={`${selectedProject.title} image ${idx + 1}`}
-                              width={1000}
-                              height={1000}
-                              className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
-                            />
-                            {showOverlay && (
-                              <div className="absolute inset-0 bg-black/60 text-white grid place-items-center text-sm font-medium">
-                                +{remaining}
-                              </div>
-                            )}
-                          </button>
-                        );
-                      })}
+                  {/* Architectural Specifications */}
+                  <section className="grid grid-cols-3 gap-0 border border-border/40 divide-x divide-border/40">
+                    <div className="p-4 text-center">
+                      <Building2 className="h-4 w-4 mx-auto text-primary/60 mb-1" />
+                      <p className="text-[8px] uppercase tracking-[0.2em] text-muted-foreground mb-0.5">Floors</p>
+                      <p className="text-sm font-medium text-foreground">{selectedProject.floors || "—"}</p>
                     </div>
+                    <div className="p-4 text-center">
+                      <Home className="h-4 w-4 mx-auto text-primary/60 mb-1" />
+                      <p className="text-[8px] uppercase tracking-[0.2em] text-muted-foreground mb-0.5">Units</p>
+                      <p className="text-sm font-medium text-foreground">{selectedProject.units || "—"}</p>
+                    </div>
+                    <div className="p-4 text-center">
+                      <Scroll className="h-4 w-4 mx-auto text-primary/60 mb-1" />
+                      <p className="text-[8px] uppercase tracking-[0.2em] text-muted-foreground mb-0.5">BHK</p>
+                      <p className="text-sm font-medium text-foreground">{selectedProject.bhk || "—"}</p>
+                    </div>
+                  </section>
 
-                    {/* Description and quick facts */}
-                    <p className="text-sm text-muted-foreground">
+
+                  {/* Full Description */}
+                  <section className="space-y-4">
+                    <div className="flex items-center gap-3">
+                      <h4 className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground font-bold whitespace-nowrap">Detailed Overview</h4>
+                      <div className="h-[1px] w-full bg-border/40" />
+                    </div>
+                    <p className="text-sm text-muted-foreground/90 leading-relaxed font-light">
                       {selectedProject.description}
                     </p>
+                  </section>
 
-                    <div className="grid grid-cols-3 gap-3 text-sm">
-                      <div className="flex items-center gap-2">
-                        <Home className="h-4 w-4 text-muted-foreground" />
-                        <span>{selectedProject.bhk} </span>
+                  {/* Refined Gallery */}
+                  {selectedProject.images?.length > 0 && (
+                    <section className="space-y-4">
+                      <h4 className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground font-bold">Gallery</h4>
+                      <div className="grid grid-cols-3 gap-2.5">
+                        {selectedProject.images.slice(0, 3).map((src: string, idx: number) => {
+                          const total = selectedProject.images?.length ?? 0;
+                          const showOverlay = idx === 2 && total > 3;
+                          const remaining = Math.max(0, total - 3);
+                          return (
+                            <button
+                              key={idx}
+                              type="button"
+                              onClick={() => { setLightboxIndex(idx); setLightboxOpen(true); }}
+                              className="relative group h-24 sm:h-32 w-full overflow-hidden"
+                            >
+                              <Image
+                                src={src || "/placeholder.svg"}
+                                alt={`${selectedProject.title} ${idx}`}
+                                fill
+                                className="object-cover transition-transform duration-500 group-hover:scale-110"
+                              />
+                              {showOverlay && (
+                                <div className="absolute inset-0 bg-black/60 flex items-center justify-center text-white text-lg font-serif">
+                                  +{remaining}
+                                </div>
+                              )}
+                            </button>
+                          );
+                        })}
                       </div>
-                      <div className="flex items-center gap-2">
-                        <Car className="h-4 w-4 text-muted-foreground" />
-                        <span>{selectedProject.floors} Floors</span>
-                      </div>
-                    </div>
+                    </section>
+                  )}
 
-                    <div className="flex items-center justify-between text-sm">
-                      {/* <span className="font-semibold text-lg">
-                        {selectedProject.price}
-                      </span> */}
-                      <span className="text-muted-foreground flex items-center gap-1">
-                        <Calendar className="h-4 w-4" />
-                        {selectedProject.completion}
-                      </span>
-                    </div>
-
-                    {/* Amenities */}
-                    <div className="space-y-1">
-                      <p className="text-sm font-medium">Amenities</p>
-                      <div className="flex flex-wrap gap-1">
-                        {selectedProject.amenities.map((a, i) => (
+                  {/* Amenities */}
+                  {selectedProject.amenities?.length > 0 && (
+                    <section className="space-y-4">
+                      <h4 className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground font-bold">Amenities</h4>
+                      <div className="flex flex-wrap gap-2">
+                        {selectedProject.amenities.map((a: string, i: number) => (
                           <Badge
                             key={i}
                             variant="secondary"
-                            className="text-xs"
+                            className="bg-muted hover:bg-primary transition-colors text-[9px] uppercase tracking-widest px-3 py-1.5"
                           >
                             {a}
                           </Badge>
                         ))}
                       </div>
-                    </div>
-                  </div>
+                    </section>
+                  )}
                 </div>
               </div>
-            )}
-          </ScrollArea>
+
+              {/* COLUMN 3: Enquiry Hub (33%) */}
+              <div className="hidden md:flex w-[33%] flex-shrink-0 flex-col bg-muted/10">
+                <div className="p-8 lg:p-10 flex flex-col h-full">
+                  <div className="mb-8">
+                    <span className="text-[9px] uppercase tracking-[0.3em] text-primary font-bold">Concierge Service</span>
+                    <h3 className="text-2xl font-serif font-bold text-foreground mt-2 leading-tight">Request Exclusive Intelligence</h3>
+                    <p className="text-xs text-muted-foreground mt-2 font-light">Direct priority access to our relationship managers.</p>
+                  </div>
+
+                  <form onSubmit={handleEnquirySubmit} className="space-y-6 flex-1">
+                    <div className="space-y-4">
+                      <div className="space-y-1.5">
+                        <label className="text-[9px] uppercase tracking-[0.15em] text-muted-foreground font-semibold">Full Name</label>
+                        <Input
+                          required
+                          value={enquiryForm.name}
+                          onChange={(e) => setEnquiryForm({ ...enquiryForm, name: e.target.value })}
+                          placeholder="Your name"
+                          className="rounded-none border-0 border-b border-border bg-transparent px-0 py-1.5 focus:ring-0 focus:border-primary transition-all text-sm"
+                        />
+                      </div>
+                      <div className="space-y-1.5">
+                        <label className="text-[9px] uppercase tracking-[0.15em] text-muted-foreground font-semibold">Mobile</label>
+                        <Input
+                          required
+                          type="tel"
+                          value={enquiryForm.phone}
+                          onChange={(e) => setEnquiryForm({ ...enquiryForm, phone: e.target.value })}
+                          placeholder="+00 (000) 000-0000"
+                          className="rounded-none border-0 border-b border-border bg-transparent px-0 py-1.5 focus:ring-0 focus:border-primary transition-all text-sm"
+                        />
+                      </div>
+                      <div className="space-y-1.5">
+                        <label className="text-[9px] uppercase tracking-[0.15em] text-muted-foreground font-semibold">Email</label>
+                        <Input
+                          required
+                          type="email"
+                          value={enquiryForm.email}
+                          onChange={(e) => setEnquiryForm({ ...enquiryForm, email: e.target.value })}
+                          placeholder="your.email@example.com"
+                          className="rounded-none border-0 border-b border-border bg-transparent px-0 py-1.5 focus:ring-0 focus:border-primary transition-all text-sm"
+                        />
+                      </div>
+                      <div className="space-y-1.5">
+                        <label className="text-[9px] uppercase tracking-[0.15em] text-muted-foreground font-semibold">Preferences</label>
+                        <Textarea
+                          value={enquiryForm.message}
+                          required
+                          onChange={(e) => setEnquiryForm({ ...enquiryForm, message: e.target.value })}
+                          placeholder="Tell us about your requirements..."
+                          rows={2}
+                          className="rounded-none border-0 border-b border-border bg-transparent px-0 py-1.5 focus:ring-0 focus:border-primary transition-all resize-none text-sm"
+                        />
+                      </div>
+                    </div>
+
+                    <div className="pt-8 space-y-4">
+                      <Button
+                        type="submit"
+                        className="w-full h-14 rounded-none uppercase tracking-[0.2em] text-[10px] font-bold bg-primary hover:bg-primary/90 transition-all shadow-lg shadow-primary/10"
+                      >
+                        <Mail className="h-4 w-4 mr-2" />
+                        Send Enquiry
+                      </Button>
+                      <button
+                        type="button"
+                        onClick={() => setSelectedProject(null)}
+                        className="w-full text-[9px] uppercase tracking-[0.2em] font-bold text-muted-foreground/60 hover:text-foreground transition-colors"
+                      >
+                        Return to Gallery
+                      </button>
+                    </div>
+                  </form>
+                </div>
+              </div>
+
+              {/* Mobile Enquiry Footer (sticky for mobile) */}
+              <div className="md:hidden p-6 bg-muted/20 border-t border-border mt-auto">
+                <Button
+                  onClick={() => {
+                    const formElement = document.querySelector('form');
+                    formElement?.scrollIntoView({ behavior: 'smooth' });
+                  }}
+                  className="w-full rounded-none tracking-widest uppercase text-[10px]"
+                >
+                  Enquire Now
+                </Button>
+              </div>
+
+            </div>
+          )}
+
         </DialogContent>
       </Dialog>
 

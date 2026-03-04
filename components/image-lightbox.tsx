@@ -57,7 +57,7 @@ export function ImageLightbox({
             />
           </Carousel>
         </div>
-        <DialogTitle />
+        <DialogTitle className="sr-only">Project Image Gallery</DialogTitle>
       </DialogContent>
     </Dialog>
   );

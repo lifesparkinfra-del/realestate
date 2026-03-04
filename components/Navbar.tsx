@@ -39,7 +39,7 @@ const Navbar = () => {
   const isActive = (path: string) => pathname === path;
 
   return (
-    <nav className="border-b bg-background/80 backdrop-blur-md sticky top-0 z-50">
+    <nav className="border-b border-border/50 bg-background/85 backdrop-blur-md sticky top-0 z-50 shadow-sm">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
           {/* Logo */}
@@ -62,7 +62,7 @@ const Navbar = () => {
               <Link
                 key={link.href}
                 href={link.href}
-                className={`text-sm font-medium transition-colors hover:text-primary ${isActive(link.href) ? "text-foreground" : "text-muted-foreground"
+                className={`text-xs font-semibold uppercase tracking-widest transition-colors hover:text-primary ${isActive(link.href) ? "text-primary border-b-2 border-primary pb-0.5" : "text-muted-foreground"
                   }`}
               >
                 {link.label}
@@ -119,8 +119,8 @@ const Navbar = () => {
                   href={link.href}
                   onClick={() => setMobileOpen(false)}
                   className={`text-lg font-medium transition-colors px-2 py-1 rounded-md hover:bg-muted ${isActive(link.href)
-                      ? "text-primary bg-primary/10"
-                      : "text-foreground"
+                    ? "text-primary bg-primary/10"
+                    : "text-foreground"
                     }`}
                 >
                   {link.label}

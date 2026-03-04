@@ -42,6 +42,8 @@ import {
   FiEdit,
 } from "react-icons/fi";
 import { motion } from "framer-motion";
+import { useState, useEffect } from "react";
+import axios from "axios";
 
 // Team data
 const teamMembers = [
@@ -161,6 +163,26 @@ const milestones = [
 ];
 
 export default function AboutPage() {
+  const [siteContent, setSiteContent] = useState<any>(null);
+
+  useEffect(() => {
+    const fetchSiteContent = async () => {
+      try {
+        const response = await axios.get("/api/content");
+        if (response.data.success) {
+          setSiteContent(response.data.data);
+        }
+      } catch (error) {
+        console.error("Error fetching site content:", error);
+      }
+    };
+    fetchSiteContent();
+  }, []);
+
+  const displayMilestones = siteContent?.aboutMilestones?.[0]?.year
+    ? siteContent.aboutMilestones
+    : milestones;
+
   return (
     <div className="min-h-screen bg-background">
       <div className="w-full h-48 sm:h-80 md:h-[20rem]">
@@ -174,20 +196,20 @@ export default function AboutPage() {
       </div>
 
       {/* Header */}
-      <AnimatedSection className="py-12 md:py-16 bg-gradient-to-br from-background to-muted/20">
+      <div className="relative overflow-hidden py-16 md:py-20 bg-gradient-to-br from-primary/10 via-primary/5 to-background">
+        {/* Accent lines */}
+        <div className="absolute top-0 left-0 right-0 h-0.5 bg-gradient-to-r from-transparent via-primary to-transparent" />
+        <div className="absolute -top-24 right-0 w-72 h-72 bg-primary/10 rounded-full blur-3xl pointer-events-none" />
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid lg:grid-cols-2 gap-12 items-center">
             <div className="space-y-6">
-              <h1 className="text-3xl sm:text-4xl lg:text-6xl font-bold text-foreground">
-                Building Dreams, Creating Communities
+              <p className="text-xs font-semibold uppercase tracking-widest text-primary">Who We Are</p>
+              <h1 className="text-2xl sm:text-3xl lg:text-4xl font-serif font-semibold text-foreground whitespace-pre-line tracking-tight">
+                {siteContent?.aboutHero?.title || "Building Dreams, Creating Communities"}
               </h1>
-              <p className="text-xl text-muted-foreground leading-relaxed">
-                Lifespark Infra & Consulting Private Limited is a growing
-                infrastructure and consulting company dedicated to delivering
-                excellence in real estate development, civil construction, and
-                project consulting. Since its incorporation in 2022, the company
-                has been driven by a vision to create high-quality spaces that
-                inspire trust, enhance communities, and stand the test of time.
+              <p className="text-lg text-muted-foreground leading-relaxed max-w-xl !text-justify">
+                {siteContent?.aboutHero?.description ||
+                  `Lifespark Infra & Consulting Private Limited is a growing infrastructure and consulting company dedicated to delivering excellence in real estate development, civil construction, and project consulting. Since its incorporation in 2022, the company has been driven by a vision to create high-quality spaces that inspire trust, enhance communities, and stand the test of time.`}
               </p>
             </div>
             <div className="relative">
@@ -197,50 +219,57 @@ export default function AboutPage() {
             </div>
           </div>
         </div>
-      </AnimatedSection>
+        <div className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-primary to-transparent opacity-30" />
+      </div>
 
       {/* Company Story */}
-      <AnimatedSection className="py-12 md:py-20 bg-background">
+      <AnimatedSection className="py-12 md:py-20 bg-background relative">
+        {/* Left accent border */}
+        <div className="absolute left-0 top-0 bottom-0 w-1.5 bg-gradient-to-b from-primary/60 via-primary to-primary/20" />
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid lg:grid-cols-2 gap-16 items-center">
             <div className="space-y-6">
-              <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-foreground">
-                From Vision to Reality
+              <h2 className="text-2xl lg:text-3xl font-serif font-semibold text-foreground whitespace-pre-line tracking-tight">
+                {siteContent?.aboutVision?.title || "From Vision to Reality"}
               </h2>
-              <div className="space-y-4 text-muted-foreground leading-relaxed">
-                <p>
-                  Founded in 2022, Lifespark Infra & Consulting was built on the
-                  idea of going beyond construction — to design and deliver
-                  sustainable developments that truly improve lives.
-                </p>
-                <p>
-                  From residential housing and commercial projects to
-                  infrastructure consulting, our team combines technical
-                  expertise with a commitment to quality and transparency. With
-                  a strong foundation of professional values, we strive to bring
-                  modern engineering, sustainable practices, and client-focused
-                  solutions to every project.
-                </p>
-                <p>
-                  We are not just building structures — we are building trust,
-                  value, and long-lasting communities.
-                </p>
+              <div className="space-y-4 text-muted-foreground leading-relaxed max-w-xl !text-justify">
+                {siteContent?.aboutVision?.description || (
+                  <>
+                    <p>
+                      Founded in 2022, Lifespark Infra & Consulting was built on the
+                      idea of going beyond construction — to design and deliver
+                      sustainable developments that truly improve lives.
+                    </p>
+                    <p>
+                      From residential housing and commercial projects to
+                      infrastructure consulting, our team combines technical
+                      expertise with a commitment to quality and transparency. With
+                      a strong foundation of professional values, we strive to bring
+                      modern engineering, sustainable practices, and client-focused
+                      solutions to every project.
+                    </p>
+                    <p>
+                      We are not just building structures — we are building trust,
+                      value, and long-lasting communities.
+                    </p>
+                  </>
+                )}
               </div>
             </div>
             <div className="space-y-6">
-              <h3 className="text-2xl font-bold text-foreground">
+              <h3 className="text-xl lg:text-2xl font-serif font-semibold text-foreground tracking-tight">
                 Company Milestones
               </h3>
               <div className="space-y-4">
-                {milestones.map((milestone, index) => (
-                  <div key={index} className="flex gap-4">
-                    <div className="flex-shrink-0 w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center">
-                      <span className="text-sm font-bold text-primary">
+                {displayMilestones.map((milestone: any, index: number) => (
+                  <div key={index} className="flex gap-4 group">
+                    <div className="flex-shrink-0 w-16 h-16 bg-primary/10 rounded-none flex items-center justify-center border border-primary/20 group-hover:bg-primary transition-colors duration-300">
+                      <span className="text-xs font-bold text-primary group-hover:text-primary-foreground transition-colors">
                         {milestone.year}
                       </span>
                     </div>
-                    <div className="flex-1 pt-3">
-                      <p className="text-muted-foreground">{milestone.event}</p>
+                    <div className="flex-1 pt-3 border-b border-border/50 pb-4 group-hover:border-primary/30 transition-colors">
+                      <p className="text-muted-foreground text-sm">{milestone.event}</p>
                     </div>
                   </div>
                 ))}
@@ -257,10 +286,10 @@ export default function AboutPage() {
             <Badge variant="secondary" className="w-fit mx-auto">
               Our Values
             </Badge>
-            <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-primary-foreground">
+            <h2 className="text-2xl lg:text-3xl font-serif font-semibold text-primary-foreground tracking-tight">
               What Drives Us
             </h2>
-            <p className="text-lg sm:text-xl text-primary-foreground/90 max-w-3xl mx-auto">
+            <p className="text-lg text-primary-foreground/90 max-w-3xl mx-auto">
               Our core values guide every decision we make and every project we
               undertake.
             </p>
@@ -380,14 +409,18 @@ export default function AboutPage() {
       </AnimatedSection> */}
 
       {/* CTA */}
-      <AnimatedSection className="py-12 md:py-20 bg-primary text-primary-foreground">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center space-y-8">
-          <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold">
-            Ready to Work With Us?
+      <AnimatedSection className="py-12 md:py-20 bg-primary text-primary-foreground relative overflow-hidden">
+        {/* Decorative background element */}
+        <div className="absolute top-0 right-0 -translate-y-12 translate-x-1/3 w-96 h-96 bg-primary-foreground/10 rounded-full blur-3xl pointer-events-none" />
+        <div className="absolute bottom-0 left-0 translate-y-1/3 -translate-x-1/3 w-72 h-72 bg-primary-foreground/10 rounded-full blur-3xl pointer-events-none" />
+
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center space-y-8 relative z-10">
+          <h2 className="text-2xl lg:text-4xl font-serif font-semibold whitespace-pre-line tracking-tight">
+            {siteContent?.aboutCta?.title || "Ready to Work With Us?"}
           </h2>
-          <p className="text-lg sm:text-xl text-primary-foreground/90">
-            Whether you're looking to invest, partner, or find your dream
-            property, we're here to help make it happen.
+          <p className="text-lg text-primary-foreground/90 whitespace-pre-line">
+            {siteContent?.aboutCta?.description || `Whether you're looking to invest, partner, or find your dream
+            property, we're here to help make it happen.`}
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Button size="lg" variant="secondary" className="text-lg px-8">
