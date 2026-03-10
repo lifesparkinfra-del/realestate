@@ -207,7 +207,7 @@ export default function AboutPage() {
               <h1 className="text-2xl sm:text-3xl lg:text-4xl font-serif font-semibold text-foreground whitespace-pre-line tracking-tight">
                 {siteContent?.aboutHero?.title || "Building Dreams, Creating Communities"}
               </h1>
-              <p className="text-lg text-muted-foreground leading-relaxed max-w-xl !text-justify">
+              <p className="text-lg text-muted-foreground leading-relaxed max-w-xl">
                 {siteContent?.aboutHero?.description ||
                   `Lifespark Infra & Consulting Private Limited is a growing infrastructure and consulting company dedicated to delivering excellence in real estate development, civil construction, and project consulting. Since its incorporation in 2022, the company has been driven by a vision to create high-quality spaces that inspire trust, enhance communities, and stand the test of time.`}
               </p>
@@ -232,7 +232,7 @@ export default function AboutPage() {
               <h2 className="text-2xl lg:text-3xl font-serif font-semibold text-foreground whitespace-pre-line tracking-tight">
                 {siteContent?.aboutVision?.title || "From Vision to Reality"}
               </h2>
-              <div className="space-y-4 text-muted-foreground leading-relaxed max-w-xl !text-justify">
+              <div className="space-y-4 text-muted-foreground leading-relaxed max-w-xl">
                 {siteContent?.aboutVision?.description || (
                   <>
                     <p>

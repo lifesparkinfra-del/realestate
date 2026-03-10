@@ -98,6 +98,7 @@ const projects = [
       "Experience premium 3BHK residences thoughtfully designed to blend modern architecture with refined luxury. Each limited apartment offers spacious interiors, high-quality finishes, and access to exclusive amenities that redefine comfort and elegance. Nestled in a prime location, these homes provide the perfect balance of convenience, style, and a vibrant community atmosphere.",
     completion: "Q2 2025",
     floors: 25,
+    units: 120,
     bhk: 3,
     amenities: ["Lift", "Lobby", "24/7 Security"],
     progress: 65,
@@ -239,7 +240,7 @@ export default function HomePage() {
             <h2 className="text-3xl lg:text-5xl font-serif font-semibold whitespace-pre-line tracking-tight">
               {siteContent?.homeJourney?.title || "Our Journey of Transformation"}
             </h2>
-            <p className="text-lg text-muted-foreground max-w-2xl text-justify">
+            <p className="text-lg text-muted-foreground max-w-2xl">
               {siteContent?.homeJourney?.description ||
                 `Our journey began in 2022, when we incorporated the company in Odisha with a vision to redefine infrastructure consulting. By 2023, we had taken on our first major consulting assignments across residential and commercial projects, marking an important milestone in our growth. In 2024, we expanded our services to offer complete project management and execution support, strengthening our role as a trusted partner in the real estate sector. The year 2025 saw us diversifying into civil infrastructure projects and extending our regional presence, further solidifying our commitment to building lasting value for our clients and communities.`}
             </p>
@@ -361,16 +362,17 @@ export default function HomePage() {
                 key={index}
                 variants={cardVariants}
                 transition={{ duration: 0.5, ease: "easeOut" }}
+                className="h-full"
               >
-                <Card className="text-center p-8 hover:shadow-2xl transition-all duration-300 group cursor-pointer border border-border/50 hover:border-primary/40 bg-background dark:bg-card">
+                <Card className="h-full text-center p-8 hover:shadow-2xl transition-all duration-300 group cursor-pointer border border-border/50 hover:border-primary/40 bg-background dark:bg-card flex flex-col">
                   <CardHeader>
                     <div className="h-14 w-14 mx-auto mb-4 rounded-none bg-primary/10 flex items-center justify-center group-hover:bg-primary transition-colors duration-300">
                       <value.icon className="h-7 w-7 text-primary group-hover:text-primary-foreground transition-colors duration-300" />
                     </div>
                     <CardTitle className="text-xl font-serif font-medium group-hover:text-primary transition-colors">{value.title}</CardTitle>
                   </CardHeader>
-                  <CardContent>
-                    <p className="text-muted-foreground !text-justify">{value.description}</p>
+                  <CardContent className="flex-1">
+                    <p className="text-muted-foreground">{value.description}</p>
                   </CardContent>
                 </Card>
               </motion.div>

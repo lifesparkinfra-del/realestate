@@ -124,15 +124,4 @@
     @apply bg-background text-foreground;
   }
 
-  p,
-  li {
-    text-align: justify;
-    text-justify: inter-word;
-  }
-
-  .text-center,
-  .text-center p,
-  .text-center li {
-    text-align: center;
-  }
 }

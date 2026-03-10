@@ -59,8 +59,8 @@ export function HeroCarousel({ title, subtitle, images }: HeroCarouselProps) {
 
       {/* Content overlay */}
       <div className="pointer-events-none absolute inset-0">
-        <div className="mx-auto flex h-full max-w-7xl items-end pb-16 px-4 sm:px-6 lg:px-8 text-left">
-          <div className="pointer-events-auto max-w-2xl">
+        <div className="mx-auto flex h-full max-w-7xl items-center justify-center px-4 sm:px-6 lg:px-8 text-center">
+          <div className="pointer-events-auto max-w-2xl flex flex-col items-center">
             <motion.h1
               initial={prefersReducedMotion ? undefined : { opacity: 0, y: 18 }}
               whileInView={
@@ -70,7 +70,7 @@ export function HeroCarousel({ title, subtitle, images }: HeroCarouselProps) {
               viewport={{ once: true }}
               className="text-pretty text-3xl font-serif font-semibold md:text-5xl lg:text-6xl tracking-tight drop-shadow-md"
             >
-              {title || "Shaping skylines with\nprecision, quality, and trust."}
+              {title || "Shaping skylines with\nprecision, quality & trust."}
             </motion.h1>
 
             <motion.p
@@ -92,7 +92,7 @@ export function HeroCarousel({ title, subtitle, images }: HeroCarouselProps) {
               }
               transition={{ duration: 0.45, ease: "easeOut", delay: 0.15 }}
               viewport={{ once: true }}
-              className="mt-8 flex flex-wrap gap-3"
+              className="mt-8 flex flex-wrap justify-center gap-3"
             >
               <Link
                 href="/projects"
